@@ -1,17 +1,11 @@
-"use client"
-
-import { Link } from "react-router"
 import {
   User,
   Calendar,
   DollarSign,
-  History,
   MapPin,
   Building,
   Users,
   Clock,
-  Plus,
-  Search,
   Filter,
   Eye,
   MessageSquare,
@@ -22,7 +16,6 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
 import { mockTenants, mockApplications } from "../../data/mockData"
 
 const TenantCard = ({ tenant }: { tenant: any }) => (
@@ -152,27 +145,6 @@ const TenantsPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto p-8 space-y-8">
-        {/* Header Section */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Tenant Management</h1>
-              <p className="text-gray-600">Manage applications, active tenants, and lease renewals</p>
-            </div>
-            <div className="flex space-x-3">
-              <Button variant="outline" asChild className="bg-white">
-                <Link to="/dashboard/previous-tenants">
-                  <History className="h-4 w-4 mr-2" />
-                  Previous Tenants
-                </Link>
-              </Button>
-              <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Tenant
-              </Button>
-            </div>
-          </div>
-        </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -241,30 +213,6 @@ const TenantsPage = () => {
           </Card>
         </div>
 
-        {/* Search and Filters */}
-        <Card className="border-0 shadow-sm bg-white">
-          <CardContent className="p-6">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search tenants and applications..."
-                  className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
-                />
-              </div>
-              <div className="flex space-x-3">
-                <Button variant="outline" className="bg-transparent">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filter
-                </Button>
-                <Button variant="outline" className="bg-transparent">
-                  Sort by
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Pending Applications Section */}
         <div>
           <div className="flex items-center justify-between mb-6">
@@ -290,9 +238,20 @@ const TenantsPage = () => {
               <h2 className="text-xl font-bold text-gray-900">Active Tenants</h2>
               <p className="text-gray-600 text-sm mt-1">Manage your current tenant relationships</p>
             </div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex space-x-3">
+                <Button variant="outline" className="bg-transparent">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
+                </Button>
+                <Button variant="outline" className="bg-transparent">
+                  Sort by
+                </Button>
+              </div>
             <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
               {mockTenants.length} active
             </Badge>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mockTenants.map((tenant) => (

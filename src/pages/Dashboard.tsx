@@ -12,7 +12,6 @@ import {
   User,
   Settings,
   LogOut,
-  Bell,
   Menu,
   UserCheck,
   ChevronRight,
@@ -20,6 +19,12 @@ import {
   X,
   Search,
   Plus,
+  Download,
+  History,
+  Grid,
+  Calendar,
+  TrendingUp,
+  Bell,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -43,6 +48,122 @@ import SettingsPage from "./dashboard/SettingsPage"
 import AccountPage from "./dashboard/AccountPage"
 import PreviousTenantsPage from "./dashboard/PreviousTenantsPage"
 import UnitsPage from "./dashboard/UnitsPage"
+
+// Add this function before the Dashboard component
+const getPageHeaderData = (pathname: string) => {
+  const path = pathname.split("/").pop()
+
+  switch (path) {
+    case "properties":
+      return {
+        title: "Property Portfolio",
+        subtitle: "Manage and monitor all your properties in one place",
+        buttons: [
+          {
+            label: "View Units",
+            variant: "outline" as const,
+            icon: Grid,
+            link: "/dashboard/units",
+          },
+          {
+            label: "Add Property",
+            variant: "default" as const,
+            icon: Plus,
+          },
+        ],
+      }
+    case "tenants":
+      return {
+        title: "Tenant Management",
+        subtitle: "Manage applications, active tenants, and lease renewals",
+        buttons: [
+          {
+            label: "Previous Tenants",
+            variant: "outline" as const,
+            icon: History,
+            link: "/dashboard/previous-tenants",
+          },
+        ],
+      }
+    case "maintenance":
+      return {
+        title: "Maintenance Management",
+        subtitle: "Track and manage all property maintenance requests",
+        buttons: [
+          {
+            label: "Analytics",
+            variant: "outline" as const,
+            icon: TrendingUp,
+          },
+        ],
+      }
+    case "messages":
+      return {
+        title: "Messages & Communication",
+        subtitle: "Stay connected with tenants and manage all communications",
+        buttons: [
+          {
+            label: "Notifications",
+            variant: "outline" as const,
+            icon: Bell,
+          },
+        ],
+      }
+    case "account":
+      return {
+        title: "Account Settings",
+        subtitle: "Manage your profile, security, and preferences",
+        buttons: [],
+      }
+    case "settings":
+      return {
+        title: "Settings",
+        subtitle: "Configure your dashboard preferences",
+        buttons: [],
+      }
+    case "previous-tenants":
+      return {
+        title: "Previous Tenants",
+        subtitle: "View and manage tenant history",
+        buttons: [
+          {
+            label: "Export Data",
+            variant: "outline" as const,
+            icon: Download,
+          },
+        ],
+      }
+    case "units":
+      return {
+        title: "Property Units",
+        subtitle: "Manage individual units across your properties",
+        buttons: [
+          {
+            label: "Add Unit",
+            variant: "default" as const,
+            icon: Plus,
+          },
+        ],
+      }
+    default: // Overview
+      return {
+        title: "Overview",
+        subtitle: "Welcome back! Here's what's happening with your properties today",
+        buttons: [
+          // {
+          //   label: "Add Property",
+          //   variant: "default" as const,
+          //   icon: Plus,
+          // },
+          {
+            label: "Schedule Tour",
+            variant: "outline" as const,
+            icon: Calendar,
+          },
+        ],
+      }
+  }
+}
 
 const Dashboard: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -230,7 +351,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Search */}
-          <div className="p-4 border-b border-gray-200">
+          {/* <div className="p-4 border-b border-gray-200">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
@@ -240,15 +361,15 @@ const Dashboard: React.FC = () => {
                 className="pl-10 bg-gray-50 border-gray-200 focus:bg-white"
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Quick Actions */}
-          <div className="p-4 border-b border-gray-200">
+          {/* <div className="p-4 border-b border-gray-200">
             <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg">
               <Plus className="h-4 w-4 mr-2" />
               Add Property
             </Button>
-          </div>
+          </div> */}
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
@@ -313,17 +434,19 @@ const Dashboard: React.FC = () => {
               >
                 <Menu className="h-5 w-5" />
               </Button>
+
               <div>
                 <div className="flex items-center space-x-3 mb-1">
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                    {getCurrentSection()}
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                    {getPageHeaderData(location.pathname).title}
                   </h1>
                   {getCurrentSection() === "Overview" && (
                     <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Live</Badge>
                   )}
                 </div>
+                <p className="text-gray-600 text-sm">{getPageHeaderData(location.pathname).subtitle}</p>
                 {getBreadcrumbs().length > 0 && (
-                  <div className="flex items-center space-x-2 text-sm">
+                  <div className="flex items-center space-x-2 text-sm mt-1">
                     {getBreadcrumbs().map((crumb, index) => (
                       <React.Fragment key={crumb.path}>
                         <Link
@@ -339,7 +462,41 @@ const Dashboard: React.FC = () => {
                 )}
               </div>
             </div>
+
             <div className="flex items-center space-x-4">
+              {/* Dynamic action buttons */}
+              <div className="hidden sm:flex items-center space-x-3">
+                {getPageHeaderData(location.pathname).buttons.map((button, index) => {
+                  const IconComponent = button.icon
+                  const ButtonComponent =
+                    button.variant === "outline" ? (
+                      <Button key={index} variant="outline" className="bg-white" asChild={!!button.link}>
+                        {button.link ? (
+                          <Link to={button.link}>
+                            <IconComponent className="h-4 w-4 mr-2" />
+                            {button.label}
+                          </Link>
+                        ) : (
+                          <>
+                            <IconComponent className="h-4 w-4 mr-2" />
+                            {button.label}
+                          </>
+                        )}
+                      </Button>
+                    ) : (
+                      <Button
+                        key={index}
+                        className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg"
+                      >
+                        <IconComponent className="h-4 w-4 mr-2" />
+                        {button.label}
+                      </Button>
+                    )
+
+                  return ButtonComponent
+                })}
+              </div>
+
               {/* Notifications */}
               <Button
                 variant="ghost"

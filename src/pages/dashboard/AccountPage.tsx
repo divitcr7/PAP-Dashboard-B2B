@@ -21,6 +21,7 @@ const AccountPage = () => {
       case "profile":
         return (
           <div className="space-y-8">
+            <div className="flex items-center justify-between gap-4">
             <div className="flex items-center space-x-6">
               <div className="relative">
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
@@ -39,6 +40,8 @@ const AccountPage = () => {
                   Remove
                 </Button>
               </div>
+            </div>
+                          <Badge className="bg-green-100 text-green-800 hover:bg-green-100 border-green-200">Verified Account</Badge>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -259,16 +262,6 @@ const AccountPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto p-8 space-y-8">
-        {/* Header Section */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Account Settings</h1>
-              <p className="text-gray-600">Manage your profile, security, and preferences</p>
-            </div>
-            <Badge className="bg-green-100 text-green-800 hover:bg-green-100 border-green-200">Verified Account</Badge>
-          </div>
-        </div>
 
         <div className="flex gap-8">
           {/* Sidebar */}

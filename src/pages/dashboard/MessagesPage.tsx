@@ -1,5 +1,3 @@
-"use client"
-
 import {
   Mail,
   MailOpen,
@@ -132,25 +130,6 @@ const MessagesPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto p-8 space-y-8">
-        {/* Header Section */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Messages & Communication</h1>
-              <p className="text-gray-600">Stay connected with tenants and manage all communications</p>
-            </div>
-            <div className="flex space-x-3">
-              <Button variant="outline" className="bg-white">
-                <Bell className="h-4 w-4 mr-2" />
-                Notifications
-              </Button>
-              <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg">
-                <Plus className="h-4 w-4 mr-2" />
-                Compose
-              </Button>
-            </div>
-          </div>
-        </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

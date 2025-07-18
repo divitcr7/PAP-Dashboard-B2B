@@ -1,53 +1,39 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Dashboard from './pages/Dashboard';
-import './App.css';
+import { Routes, Route, Navigate } from "react-router";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import ForgotPassword from "./components/ForgotPassword";
+import { AuthProvider } from "./context/AuthContext";
+import ErrorBoundary from "./components/ErrorBoundary";
+import Signup from "./pages/Signup";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-  };
+  const isAuthenticated = false;
 
   return (
-    <Router>
-      <div className="min-h-screen bg-blue-500">
-        <Routes>
-          <Route 
-            path="/login" 
-            element={
-              isAuthenticated ? 
-                <Navigate to="/dashboard" replace /> : 
-                <Login onLogin={handleLogin} />
-            } 
-          />
-          <Route 
-            path="/signup" 
-            element={
-              isAuthenticated ? 
-                <Navigate to="/dashboard" replace /> : 
-                <Signup onSignup={handleLogin} />
-            } 
-          />
-          <Route 
-            path="/dashboard/*" 
-            element={
-              isAuthenticated ? 
-                <Dashboard onLogout={handleLogout} /> : 
-                <Navigate to="/login" replace />
-            } 
-          />
-          <Route path="/" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </div>
-    </Router>
+    <ErrorBoundary>
+      <AuthProvider>
+        <div className="mx-auto">
+          <Routes>
+            {!isAuthenticated ? (
+              <>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+              </>
+            ) : (
+              <>
+                <Route path="/dashboard/*" element={<Dashboard />} />
+                <Route
+                  path="*"
+                  element={<Navigate to="/dashboard" replace />}
+                />
+              </>
+            )}
+          </Routes>
+        </div>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 

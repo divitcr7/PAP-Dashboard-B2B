@@ -1,19 +1,25 @@
 {
-  "rewrites": [
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=1, stale-while-revalidate"
+        }
+      ]
     }
   ],
-  "routes": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "builds": [
     {
-      "src": "/[^.]+",
-      "dest": "/",
-      "status": 200
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
-  ],
-  "github": {
-    "silent": true
-  },
-  "framework": "vite"
+  ]
 }

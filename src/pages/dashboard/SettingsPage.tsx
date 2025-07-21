@@ -11,7 +11,6 @@ import {
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("appearance");
-  const [showPassword, setShowPassword] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState({
     email: true,

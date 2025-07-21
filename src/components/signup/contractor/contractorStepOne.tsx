@@ -8,26 +8,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { UseFormReturn } from "react-hook-form";
-import type { ContractorSignupFormData } from "@/schemas/Auth";
+import type { ContractorStepProps } from "@/types/auth";
 
-interface ContractorStepOneProps {
-  form: UseFormReturn<ContractorSignupFormData>;
-}
-
-const ContractorStepOne: React.FC<ContractorStepOneProps> = ({ form }) => {
+const ContractorStepOne: React.FC<ContractorStepProps> = ({ form }) => {
   return (
     <div className="w-full max-w-2xl mx-auto">
-        <div className="mb-8 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Building2 className="w-8 h-8 text-green-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Personal Information
-          </h1>
-          <p className="text-gray-600">
-            Let's start with your basic information
-          </p>
+      <div className="mb-8 text-center">
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Building2 className="w-8 h-8 text-green-600" />
+        </div>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          Personal Information
+        </h1>
+        <p className="text-gray-600">Let's start with your basic information</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -140,4 +133,4 @@ const ContractorStepOne: React.FC<ContractorStepOneProps> = ({ form }) => {
   );
 };
 
-export default ContractorStepOne; 
+export default ContractorStepOne;

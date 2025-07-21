@@ -5,58 +5,56 @@ import {
   AlertCircle,
   User,
   Calendar,
-  Search,
   Filter,
   Building,
   Eye,
   TrendingUp,
   DollarSign,
-} from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
-import { mockMaintenanceRequests } from "../../data/mockData"
+} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { mockMaintenanceRequests } from "../../data/mockData";
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
     case "high":
-      return "bg-red-100 text-red-800 border-red-200"
+      return "bg-red-100 text-red-800 border-red-200";
     case "medium":
-      return "bg-yellow-100 text-yellow-800 border-yellow-200"
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
     case "low":
-      return "bg-green-100 text-green-800 border-green-200"
+      return "bg-green-100 text-green-800 border-green-200";
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200"
+      return "bg-gray-100 text-gray-800 border-gray-200";
   }
-}
+};
 
 const getStatusColor = (status: string) => {
   switch (status) {
     case "completed":
-      return "bg-green-100 text-green-800 border-green-200"
+      return "bg-green-100 text-green-800 border-green-200";
     case "in-progress":
-      return "bg-blue-100 text-blue-800 border-blue-200"
+      return "bg-blue-100 text-blue-800 border-blue-200";
     case "pending":
-      return "bg-yellow-100 text-yellow-800 border-yellow-200"
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200"
+      return "bg-gray-100 text-gray-800 border-gray-200";
   }
-}
+};
 
 const getStatusIcon = (status: string) => {
   switch (status) {
     case "completed":
-      return <CheckCircle className="h-4 w-4" />
+      return <CheckCircle className="h-4 w-4" />;
     case "in-progress":
-      return <Wrench className="h-4 w-4" />
+      return <Wrench className="h-4 w-4" />;
     case "pending":
-      return <Clock className="h-4 w-4" />
+      return <Clock className="h-4 w-4" />;
     default:
-      return <AlertCircle className="h-4 w-4" />
+      return <AlertCircle className="h-4 w-4" />;
   }
-}
+};
 
 const MaintenanceCard = ({ request }: { request: any }) => (
   <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-sm bg-white">
@@ -83,12 +81,17 @@ const MaintenanceCard = ({ request }: { request: any }) => (
         </div>
         <div className="flex flex-col items-end space-y-2">
           <Badge className={`border ${getPriorityColor(request.priority)}`}>
-            {request.priority.charAt(0).toUpperCase() + request.priority.slice(1)} Priority
+            {request.priority.charAt(0).toUpperCase() +
+              request.priority.slice(1)}{" "}
+            Priority
           </Badge>
           <Badge className={`border ${getStatusColor(request.status)}`}>
             <span className="flex items-center space-x-1">
               {getStatusIcon(request.status)}
-              <span>{request.status.charAt(0).toUpperCase() + request.status.slice(1)}</span>
+              <span>
+                {request.status.charAt(0).toUpperCase() +
+                  request.status.slice(1)}
+              </span>
             </span>
           </Badge>
         </div>
@@ -97,13 +100,17 @@ const MaintenanceCard = ({ request }: { request: any }) => (
       {request.assignedTo && (
         <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
           <p className="text-sm text-blue-800">
-            <span className="font-semibold">Assigned to:</span> {request.assignedTo}
+            <span className="font-semibold">Assigned to:</span>{" "}
+            {request.assignedTo}
           </p>
         </div>
       )}
 
       <div className="flex space-x-3">
-        <Button variant="outline" className="flex-1 bg-transparent hover:bg-blue-50 hover:border-blue-200">
+        <Button
+          variant="outline"
+          className="flex-1 bg-transparent hover:bg-blue-50 hover:border-blue-200"
+        >
           <Eye className="h-4 w-4 mr-2" />
           View Details
         </Button>
@@ -122,26 +129,37 @@ const MaintenanceCard = ({ request }: { request: any }) => (
       </div>
     </CardContent>
   </Card>
-)
+);
 
 const MaintenancePage = () => {
-  const pendingRequests = mockMaintenanceRequests.filter((req) => req.status === "pending")
-  const inProgressRequests = mockMaintenanceRequests.filter((req) => req.status === "in-progress")
-  const completedRequests = mockMaintenanceRequests.filter((req) => req.status === "completed")
+  const pendingRequests = mockMaintenanceRequests.filter(
+    (req) => req.status === "pending"
+  );
+  const inProgressRequests = mockMaintenanceRequests.filter(
+    (req) => req.status === "in-progress"
+  );
+  const completedRequests = mockMaintenanceRequests.filter(
+    (req) => req.status === "completed"
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto p-8 space-y-8">
-
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card className="border-0 shadow-sm bg-white hover:shadow-lg transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Total Requests</p>
-                  <p className="text-3xl font-bold text-gray-900">{mockMaintenanceRequests.length}</p>
-                  <p className="text-sm text-blue-600 font-medium mt-1">+5 this week</p>
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    Total Requests
+                  </p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {mockMaintenanceRequests.length}
+                  </p>
+                  <p className="text-sm text-blue-600 font-medium mt-1">
+                    +5 this week
+                  </p>
                 </div>
                 <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
                   <Wrench className="h-7 w-7 text-blue-600" />
@@ -154,10 +172,18 @@ const MaintenancePage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Pending</p>
-                  <p className="text-3xl font-bold text-yellow-600">{pendingRequests.length}</p>
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    Pending
+                  </p>
+                  <p className="text-3xl font-bold text-yellow-600">
+                    {pendingRequests.length}
+                  </p>
                   <Progress
-                    value={(pendingRequests.length / mockMaintenanceRequests.length) * 100}
+                    value={
+                      (pendingRequests.length /
+                        mockMaintenanceRequests.length) *
+                      100
+                    }
                     className="h-2 mt-2"
                   />
                 </div>
@@ -172,10 +198,18 @@ const MaintenancePage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">In Progress</p>
-                  <p className="text-3xl font-bold text-blue-600">{inProgressRequests.length}</p>
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    In Progress
+                  </p>
+                  <p className="text-3xl font-bold text-blue-600">
+                    {inProgressRequests.length}
+                  </p>
                   <Progress
-                    value={(inProgressRequests.length / mockMaintenanceRequests.length) * 100}
+                    value={
+                      (inProgressRequests.length /
+                        mockMaintenanceRequests.length) *
+                      100
+                    }
                     className="h-2 mt-2"
                   />
                 </div>
@@ -190,10 +224,18 @@ const MaintenancePage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Completed</p>
-                  <p className="text-3xl font-bold text-green-600">{completedRequests.length}</p>
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    Completed
+                  </p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {completedRequests.length}
+                  </p>
                   <Progress
-                    value={(completedRequests.length / mockMaintenanceRequests.length) * 100}
+                    value={
+                      (completedRequests.length /
+                        mockMaintenanceRequests.length) *
+                      100
+                    }
                     className="h-2 mt-2"
                   />
                 </div>
@@ -232,10 +274,17 @@ const MaintenancePage = () => {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Pending Requests</h2>
-                  <p className="text-gray-600 text-sm mt-1">Requests awaiting assignment</p>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Pending Requests
+                  </h2>
+                  <p className="text-gray-600 text-sm mt-1">
+                    Requests awaiting assignment
+                  </p>
                 </div>
-                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                <Badge
+                  variant="secondary"
+                  className="bg-yellow-100 text-yellow-800 border-yellow-200"
+                >
                   {pendingRequests.length} pending
                 </Badge>
               </div>
@@ -252,10 +301,17 @@ const MaintenancePage = () => {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">In Progress</h2>
-                  <p className="text-gray-600 text-sm mt-1">Currently being worked on</p>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    In Progress
+                  </h2>
+                  <p className="text-gray-600 text-sm mt-1">
+                    Currently being worked on
+                  </p>
                 </div>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-100 text-blue-800 border-blue-200"
+                >
                   {inProgressRequests.length} active
                 </Badge>
               </div>
@@ -271,8 +327,12 @@ const MaintenancePage = () => {
           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">All Requests</h2>
-                <p className="text-gray-600 text-sm mt-1">Complete maintenance history</p>
+                <h2 className="text-xl font-bold text-gray-900">
+                  All Requests
+                </h2>
+                <p className="text-gray-600 text-sm mt-1">
+                  Complete maintenance history
+                </p>
               </div>
               <Badge variant="secondary" className="bg-gray-100 text-gray-800">
                 {mockMaintenanceRequests.length} total
@@ -291,8 +351,12 @@ const MaintenancePage = () => {
           <CardContent className="p-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Performance Overview</h2>
-                <p className="text-gray-600 text-sm mt-1">Maintenance metrics and insights</p>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Performance Overview
+                </h2>
+                <p className="text-gray-600 text-sm mt-1">
+                  Maintenance metrics and insights
+                </p>
               </div>
               <Button variant="outline" className="bg-transparent">
                 <TrendingUp className="h-4 w-4 mr-2" />
@@ -302,15 +366,23 @@ const MaintenancePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-green-800">Avg Response Time</h3>
+                  <h3 className="font-semibold text-green-800">
+                    Avg Response Time
+                  </h3>
                   <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
-                <p className="text-3xl font-bold text-green-900 mb-2">2.3 hours</p>
-                <p className="text-sm text-green-700">15% faster than last month</p>
+                <p className="text-3xl font-bold text-green-900 mb-2">
+                  2.3 hours
+                </p>
+                <p className="text-sm text-green-700">
+                  15% faster than last month
+                </p>
               </div>
               <div className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-blue-800">Completion Rate</h3>
+                  <h3 className="font-semibold text-blue-800">
+                    Completion Rate
+                  </h3>
                   <TrendingUp className="h-5 w-5 text-blue-600" />
                 </div>
                 <p className="text-3xl font-bold text-blue-900 mb-2">94.2%</p>
@@ -329,7 +401,7 @@ const MaintenancePage = () => {
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MaintenancePage
+export default MaintenancePage;

@@ -1,5 +1,5 @@
 import type React from "react";
-import { FileText } from "lucide-react";
+import { Building } from "lucide-react";
 import {
   FormField,
   FormItem,
@@ -8,19 +8,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { UseFormReturn } from "react-hook-form";
-import type { ContractorSignupFormData } from "@/schemas/Auth";
+import type { ContractorStepProps } from "@/types/auth";
 
-interface ContractorStepThreeProps {
-  form: UseFormReturn<ContractorSignupFormData>;
-}
-
-const ContractorStepThree: React.FC<ContractorStepThreeProps> = ({ form }) => {
+const ContractorStepThree: React.FC<ContractorStepProps> = ({ form }) => {
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="mb-8 text-center">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <FileText className="w-8 h-8 text-green-600" />
+          <Building className="w-8 h-8 text-green-600" />
         </div>
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
           Business Information
@@ -152,4 +147,4 @@ const ContractorStepThree: React.FC<ContractorStepThreeProps> = ({ form }) => {
   );
 };
 
-export default ContractorStepThree; 
+export default ContractorStepThree;

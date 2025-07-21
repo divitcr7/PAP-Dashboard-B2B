@@ -1,19 +1,7 @@
-import { useState } from "react";
-import {
-  ArrowLeft,
-  User,
-  Calendar,
-  DollarSign,
-  FileText,
-  Search,
-  Filter,
-} from "lucide-react";
+import { ArrowLeft, User, Calendar, DollarSign, FileText } from "lucide-react";
 import { Link } from "react-router";
 
 const PreviousTenantsPage = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
-
   const previousTenants = [
     {
       id: 1,

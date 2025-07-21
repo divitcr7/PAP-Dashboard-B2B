@@ -1,5 +1,5 @@
 import type React from "react";
-import { Shield } from "lucide-react";
+import { FileText } from "lucide-react";
 import {
   FormField,
   FormItem,
@@ -7,26 +7,16 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import type { ContractorStepProps } from "@/types/auth";
 
-import type { UseFormReturn } from "react-hook-form";
-import type { ContractorSignupFormData } from "@/schemas/Auth";
-import { useState } from "react";
-
-interface ContractorStepFiveProps {
-  form: UseFormReturn<ContractorSignupFormData>;
-}
-
-const ContractorStepFive: React.FC<ContractorStepFiveProps> = ({ form }) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+const ContractorStepFive: React.FC<ContractorStepProps> = ({ form }) => {
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="mb-6 text-center">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-          <Shield className="w-8 h-8 text-green-600" />
+          <FileText className="w-8 h-8 text-green-600" />
         </div>
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
           Services & Specializations
@@ -104,7 +94,6 @@ const ContractorStepFive: React.FC<ContractorStepFiveProps> = ({ form }) => {
             </FormItem>
           )}
         />
-
       </div>
     </div>
   );

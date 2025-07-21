@@ -5,15 +5,9 @@ import { FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { UseFormReturn } from "react-hook-form";
-import type { ContractorSignupFormData } from "@/schemas/Auth";
+import type { ContractorStepProps } from "@/types/auth";
 
-interface ContractorStepSixProps {
-  form: UseFormReturn<ContractorSignupFormData>;
-}
-
-const ContractorStepSix: React.FC<ContractorStepSixProps> = ({
-  form, }) => {
+const ContractorStepSix: React.FC<ContractorStepProps> = ({ form }) => {
   const [emailOtpSent, setEmailOtpSent] = useState(false);
   const [phoneOtpSent, setPhoneOtpSent] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);

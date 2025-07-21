@@ -8,14 +8,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { UseFormReturn } from "react-hook-form";
-import type { ContractorSignupFormData } from "@/schemas/Auth";
+import type { ContractorStepProps } from "@/types/auth";
 
-interface ContractorStepTwoProps {
-  form: UseFormReturn<ContractorSignupFormData>;
-}
-
-const ContractorStepTwo: React.FC<ContractorStepTwoProps> = ({ form }) => {
+const ContractorStepTwo: React.FC<ContractorStepProps> = ({ form }) => {
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="mb-8 text-center">
@@ -143,4 +138,4 @@ const ContractorStepTwo: React.FC<ContractorStepTwoProps> = ({ form }) => {
   );
 };
 
-export default ContractorStepTwo; 
+export default ContractorStepTwo;

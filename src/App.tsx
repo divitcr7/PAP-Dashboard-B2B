@@ -1,37 +1,30 @@
-import { Routes, Route, Navigate } from "react-router";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import ForgotPassword from "./components/ForgotPassword";
-import { AuthProvider } from "./context/AuthContext";
-import ErrorBoundary from "./components/ErrorBoundary";
-import Signup from "./pages/Signup";
+import React, { Suspense } from "react";
+import { Routes, Route } from "react-router";
+import { AuthProvider } from "@/context/AuthContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
+
+// Lazy load route components
+const Login = React.lazy(() => import("@/pages/Login"));
+const Signup = React.lazy(() => import("@/pages/Signup"));
+const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
 
 function App() {
-  const isAuthenticated = false;
-
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <div className="mx-auto">
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center min-h-screen">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          }
+        >
           <Routes>
-            {!isAuthenticated ? (
-              <>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="*" element={<Navigate to="/login" replace />} />
-              </>
-            ) : (
-              <>
-                <Route path="/dashboard/*" element={<Dashboard />} />
-                <Route
-                  path="*"
-                  element={<Navigate to="/dashboard" replace />}
-                />
-              </>
-            )}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/dashboard/*" element={<Dashboard />} />
           </Routes>
-        </div>
+        </Suspense>
       </AuthProvider>
     </ErrorBoundary>
   );

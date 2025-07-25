@@ -5,12 +5,16 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip.tsx";
+import { AuthProvider } from "./context/AuthContext";
+
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <TooltipProvider>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </TooltipProvider>
       <Toaster />
     </BrowserRouter>

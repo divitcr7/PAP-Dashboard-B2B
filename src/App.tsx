@@ -2,16 +2,16 @@ import { Routes, Route, Navigate } from "react-router";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ForgotPassword from "./components/ForgotPassword";
-import { AuthProvider } from "./context/AuthContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Signup from "./pages/Signup";
+import { useAuth } from "./context/useAuthContext";
 
 function App() {
-  const isAuthenticated = false;
+  const { isAuthenticated } = useAuth();
 
   return (
     <ErrorBoundary>
-      <AuthProvider>
+      
         <div className="mx-auto">
           <Routes>
             {!isAuthenticated ? (
@@ -32,7 +32,6 @@ function App() {
             )}
           </Routes>
         </div>
-      </AuthProvider>
     </ErrorBoundary>
   );
 }

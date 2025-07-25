@@ -1,53 +1,213 @@
 import type React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Shield, Mail, Phone, Check, X } from "lucide-react";
-import { FormField, FormItem, FormControl } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { UseFormReturn } from "react-hook-form";
 import type { ContractorSignupFormData } from "@/schemas/Auth";
+import type { ContractorSignupFormValues } from "@/types/auth";
+import { useAuth } from "@/context/useAuthContext";
+import { toast } from "@/utils";
 
 interface ContractorStepSixProps {
   form: UseFormReturn<ContractorSignupFormData>;
+  onSuccess?: () => void;
 }
 
 const ContractorStepSix: React.FC<ContractorStepSixProps> = ({
-  form, }) => {
+  form,
+  onSuccess,
+}) => {
   const [emailOtpSent, setEmailOtpSent] = useState(false);
   const [phoneOtpSent, setPhoneOtpSent] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
+  const [emailOtp, setEmailOtp] = useState<string[]>(["", "", "", "", "", ""]);
+  const [phoneOtp, setPhoneOtp] = useState<string[]>(["", "", "", "", "", ""]);
+  const [isVerifying, setIsVerifying] = useState(false);
+  
+  const emailInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const phoneInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { signup } = useAuth();
+
+  const handleOtpChange = (
+    index: number,
+    value: string,
+    type: 'email' | 'phone'
+  ) => {
+    if (value.length > 1) return;
+    
+    const setOtp = type === 'email' ? setEmailOtp : setPhoneOtp;
+    const currentOtp = type === 'email' ? emailOtp : phoneOtp;
+    const inputRefs = type === 'email' ? emailInputRefs : phoneInputRefs;
+    
+    const newOtp = [...currentOtp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+
+    // Auto-verify when all digits are entered
+    if (newOtp.every(digit => digit !== "") && newOtp.join("") === "00000") {
+      if (type === 'email') {
+        verifyEmailOtp(newOtp.join(""));
+      } else {
+        verifyPhoneOtp(newOtp.join(""));
+      }
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent,
+    type: 'email' | 'phone'
+  ) => {
+    const currentOtp = type === 'email' ? emailOtp : phoneOtp;
+    const inputRefs = type === 'email' ? emailInputRefs : phoneInputRefs;
+    
+    if (e.key === "Backspace" && !currentOtp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
 
   const sendEmailOtp = async () => {
-    // Simulate sending email OTP
     console.log("Sending email OTP to:", form.watch("email"));
     setEmailOtpSent(true);
+    toast.success("Email OTP sent", {
+      description: "Check your email for the verification code.",
+    });
   };
 
   const sendPhoneOtp = async () => {
-    // Simulate sending phone OTP
     console.log("Sending phone OTP to:", form.watch("phone"));
     setPhoneOtpSent(true);
+    toast.success("SMS OTP sent", {
+      description: "Check your phone for the verification code.",
+    });
   };
 
-  const verifyEmailOtp = async () => {
-    // Simulate OTP verification
-    const otp = form.watch("emailOtp");
-    if (otp === "123456") {
-      // Mock verification
+  const verifyEmailOtp = async (otpCode?: string) => {
+    const otp = otpCode || emailOtp.join("");
+    if (otp === "00000") {
       setEmailVerified(true);
+      toast.success("Email verified!", {
+        description: "Your email has been successfully verified.",
+      });
+      
+      // Check if both are verified and complete signup
+      if (phoneVerified) {
+        await completeSignup();
+      }
+    } else {
+      toast.error("Invalid OTP", {
+        description: "Please enter the correct email verification code.",
+      });
     }
   };
 
-  const verifyPhoneOtp = async () => {
-    // Simulate OTP verification
-    const otp = form.watch("phoneOtp");
-    if (otp === "654321") {
-      // Mock verification
+  const verifyPhoneOtp = async (otpCode?: string) => {
+    const otp = otpCode || phoneOtp.join("");
+    if (otp === "00000") {
       setPhoneVerified(true);
+      toast.success("Phone verified!", {
+        description: "Your phone number has been successfully verified.",
+      });
+      
+      // Check if both are verified and complete signup
+      if (emailVerified) {
+        await completeSignup();
+      }
+    } else {
+      toast.error("Invalid OTP", {
+        description: "Please enter the correct phone verification code.",
+      });
     }
   };
+
+  const completeSignup = async () => {
+    if (!emailVerified || !phoneVerified) return;
+    
+    setIsVerifying(true);
+    try {
+      const formData = form.getValues();
+      const signupData: ContractorSignupFormValues = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        zipCode: formData.zipCode,
+        businessName: formData.businessName,
+        businessType: formData.businessType,
+        ein: formData.ein,
+        yearsInBusiness: formData.yearsInBusiness,
+        licenseNumber: formData.licenseNumber,
+        licenseType: formData.licenseType,
+        licenseExpiry: formData.licenseExpiry,
+        certifications: formData.certifications,
+        hasInsurance: formData.hasInsurance,
+        insuranceProvider: formData.insuranceProvider,
+        insuranceAmount: formData.insuranceAmount,
+        insuranceExpiry: formData.insuranceExpiry,
+        serviceCategories: formData.serviceCategories,
+        specializations: formData.specializations,
+        serviceRadius: formData.serviceRadius,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        backgroundCheckConsent: formData.backgroundCheckConsent,
+        termsAccepted: formData.termsAccepted,
+        emailOtp: emailOtp.join(""),
+        phoneOtp: phoneOtp.join("")
+      };
+
+      await signup(signupData);
+      onSuccess?.();
+    } catch (error) {
+      console.error("Signup failed:", error);
+      toast.error("Signup failed", {
+        description: "There was an error creating your account. Please try again.",
+      });
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const OtpInputs = ({ 
+    otp, 
+    type, 
+    disabled 
+  }: { 
+    otp: string[], 
+    type: 'email' | 'phone', 
+    disabled: boolean 
+  }) => (
+    <div className="flex gap-2 justify-center">
+      {otp.map((digit, index) => (
+        <input
+          key={index}
+          ref={el => {
+            if (type === 'email') {
+              emailInputRefs.current[index] = el;
+            } else {
+              phoneInputRefs.current[index] = el;
+            }
+          }}
+          type="text"
+          maxLength={1}
+          value={digit}
+          onChange={e => handleOtpChange(index, e.target.value, type)}
+          onKeyDown={e => handleKeyDown(index, e, type)}
+          disabled={disabled}
+          className="w-12 h-12 border border-green-400 rounded text-center text-lg font-medium focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:opacity-50"
+        />
+      ))}
+    </div>
+  );
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -102,37 +262,19 @@ const ContractorStepSix: React.FC<ContractorStepSixProps> = ({
                   </Button>
                 ) : (
                   <div className="space-y-3">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 text-center">
                       We've sent a verification code to your email. Please enter
                       it below:
                     </p>
-                    <div className="flex space-x-2">
-                      <FormField
-                        control={form.control}
-                        name="emailOtp"
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormControl>
-                              <Input
-                                {...field}
-                                placeholder="Enter 6-digit code"
-                                maxLength={6}
-                                className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900"
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        type="button"
-                        onClick={verifyEmailOtp}
-                        disabled={form.watch("emailOtp")?.length !== 6}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        Verify
-                      </Button>
-                    </div>
-                    <p className="text-xs text-gray-500">
+                    <OtpInputs 
+                      otp={emailOtp} 
+                      type="email" 
+                      disabled={isVerifying} 
+                    />
+                    <p className="text-xs text-gray-500 text-center">
+                      Demo: Enter "00000" to verify
+                    </p>
+                    <p className="text-xs text-gray-500 text-center">
                       Didn't receive the code?{" "}
                       <button
                         type="button"
@@ -186,37 +328,19 @@ const ContractorStepSix: React.FC<ContractorStepSixProps> = ({
                   </Button>
                 ) : (
                   <div className="space-y-3">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 text-center">
                       We've sent a verification code to your phone. Please enter
                       it below:
                     </p>
-                    <div className="flex space-x-2">
-                      <FormField
-                        control={form.control}
-                        name="phoneOtp"
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormControl>
-                              <Input
-                                {...field}
-                                placeholder="Enter 6-digit code"
-                                maxLength={6}
-                                className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900"
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        type="button"
-                        onClick={verifyPhoneOtp}
-                        disabled={form.watch("phoneOtp")?.length !== 6}
-                        className="bg-green-600 hover:bg-green-700"
-                      >
-                        Verify
-                      </Button>
-                    </div>
-                    <p className="text-xs text-gray-500">
+                    <OtpInputs 
+                      otp={phoneOtp} 
+                      type="phone" 
+                      disabled={isVerifying} 
+                    />
+                    <p className="text-xs text-gray-500 text-center">
+                      Demo: Enter "00000" to verify
+                    </p>
+                    <p className="text-xs text-gray-500 text-center">
                       Didn't receive the code?{" "}
                       <button
                         type="button"
@@ -234,7 +358,7 @@ const ContractorStepSix: React.FC<ContractorStepSixProps> = ({
         </Card>
 
         {/* Verification Status */}
-        {emailVerified && phoneVerified && (
+        {emailVerified && phoneVerified && !isVerifying && (
           <Card className="border-green-200 bg-green-50">
             <CardContent className="pt-6">
               <div className="flex items-center justify-center space-x-3 text-green-700">
@@ -242,7 +366,7 @@ const ContractorStepSix: React.FC<ContractorStepSixProps> = ({
                 <span className="font-medium">All verifications complete!</span>
               </div>
               <p className="text-center text-sm text-green-600 mt-2">
-                You can now create your contractor account
+                Creating your contractor account...
               </p>
             </CardContent>
           </Card>

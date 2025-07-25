@@ -1,21 +1,10 @@
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  companyName: string;
-  role: string;
-  isVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface LoginFormValues {
   email: string;
   password: string;
   rememberMe?: boolean;
 }
 
-export interface SignupFormValues {
+export interface CompanySignupFormValues {
   // Step 1: Company Information
   companyName: string;
   ein: string;
@@ -54,7 +43,91 @@ export interface SignupFormValues {
   termsAccepted: boolean;
   privacyAccepted: boolean;
   companyEmailOnlyLogin: boolean;
-} 
+}
+
+export interface RetailerSignupFormValues {
+  // Step 1: Business Information
+  businessName: string;
+  businessType: "sole_proprietorship" | "llc" | "corporation" | "partnership";
+  ein: string;
+  website?: string;
+  
+  // Step 2: Contact Information
+  contactName: string;
+  contactTitle: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  
+  // Step 3: Service Categories
+  serviceCategories: string[];
+  serviceDescription: string;
+  
+  // Step 4: Service Areas & Business Details
+  serviceArea: string[];
+  yearsInBusiness: string;
+  businessLicense?: string;
+  insuranceProvider?: string;
+  insuranceAmount?: string;
+  
+  // Step 5: Account Setup
+  password: string;
+  confirmPassword: string;
+  termsAccepted: boolean;
+  
+  // Step 6: Verification
+  emailOtp?: string;
+  phoneOtp?: string;
+}
+
+export interface ContractorSignupFormValues {
+  // Step 1: Personal Information
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+
+  // Step 2: Address Information
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+
+  // Step 3: Business Information
+  businessName?: string;
+  businessType: "individual" | "llc" | "corporation" | "partnership";
+  ein?: string;
+  yearsInBusiness: string;
+
+  // Step 4: License & Insurance
+  licenseNumber?: string;
+  licenseType?: string;
+  licenseExpiry?: string;
+  certifications?: string[];
+  hasInsurance: boolean;
+  insuranceProvider?: string;
+  insuranceAmount?: string;
+  insuranceExpiry?: string;
+
+  // Step 5: Services & Account
+  serviceCategories: string[];
+  specializations?: string;
+  serviceRadius: string;
+  password: string;
+  confirmPassword: string;
+  backgroundCheckConsent: boolean;
+  termsAccepted: boolean;
+
+  // Step 6: Verification
+  emailOtp?: string;
+  phoneOtp?: string;
+}
+
+// Update SignupFormValues to be a union type of all signup types
+export type SignupFormValues = RetailerSignupFormValues | CompanySignupFormValues | ContractorSignupFormValues;
 
 // types/auth.ts
 export interface LoginData {
@@ -80,4 +153,15 @@ export interface ForgotPasswordData {
 export interface ValidationError {
   field: string;
   message: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  companyName: string;
+  role: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

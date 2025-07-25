@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -101,20 +101,27 @@ const Login = () => {
     }
   };
 
-  const handleLoginInputChange = (field: string, value: string | boolean) => {
-    setLoginData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+const handleLoginInputChange = useCallback((field: string, value: string | boolean) => {
+  setLoginData((prev) => ({
+    ...prev,
+    [field]: value,
+  }));
 
-    // Clear error when user starts typing
-    if (loginErrors[field as keyof LoginErrors]) {
-      setLoginErrors((prev) => ({
-        ...prev,
-        [field]: undefined,
-      }));
-    }
-  };
+  // Clear error when user starts typing
+  if (loginErrors[field as keyof LoginErrors]) {
+    setLoginErrors((prev) => ({
+      ...prev,
+      [field]: undefined,
+    }));
+  }
+}, [loginErrors]);
+
+// And replace the togglePasswordVisibility function with this:
+
+const togglePasswordVisibility = useCallback((e: React.MouseEvent) => {
+  e.preventDefault();
+  setShowPassword(prev => !prev);
+}, []);
 
   // Company Info Component
   const CompanyInfo = () => (
@@ -221,19 +228,18 @@ const Login = () => {
                   handleLoginInputChange("password", e.target.value)
                 }
               />
-              <Button
+              <button
                 type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent focus:outline-none"
+                onClick={togglePasswordVisibility}
               >
                 {showPassword ? (
                   <EyeOff className="w-4 h-4 text-gray-400" />
                 ) : (
                   <Eye className="w-4 h-4 text-gray-400" />
                 )}
-              </Button>
+              </button>
             </div>
             {loginErrors.password && (
               <p className="text-sm text-red-600">{loginErrors.password}</p>

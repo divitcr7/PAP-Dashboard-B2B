@@ -2,16 +2,16 @@ import type React from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ArrowRight, Building2 } from "lucide-react";
+
+// Add missing imports
+import { useAuth } from "@/context/useAuthContext";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useAuth } from "@/context/useAuthContext";
+import { ArrowLeft, ArrowRight, Building2 } from "lucide-react";
 import type {
   ContractorSignupFormData,
   ContractorFormStep,
-} from "@/schemas/Auth";
-import { completeContractorSignupSchema } from "@/schemas/Auth";
+} from "@/types/auth";
 
 // Import step components
 import ContractorStepOne from "./contractorStepOne";
@@ -32,7 +32,7 @@ const ContractorSignup: React.FC<ContractorSignupProps> = ({ onBack }) => {
   const { signup, isLoading } = useAuth();
   const totalSteps = 6;
 
-  const form = useForm<ContractorSignupFormData>({
+  const form = useForm<Partial<ContractorSignupFormData>>({
     // resolver: zodResolver(completeContractorSignupSchema),
     defaultValues: {
       firstName: "",
@@ -70,21 +70,71 @@ const ContractorSignup: React.FC<ContractorSignupProps> = ({ onBack }) => {
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
-      setCurrentStep((prev) => (prev + 1) as ContractorFormStep);
+      setCurrentStep((prev: number) => (prev + 1) as ContractorFormStep);
     }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep((prev) => (prev - 1) as ContractorFormStep);
+      setCurrentStep((prev: number) => (prev - 1) as ContractorFormStep);
     }
   };
 
-  const handleSubmit = async (data: ContractorSignupFormData) => {
+  const handleSubmit = async (data: Partial<ContractorSignupFormData>) => {
     try {
       if (currentStep === totalSteps) {
-        await signup(data);
-        navigate("/dashboard");
+        // Ensure all required fields are present
+        if (
+          data.firstName &&
+          data.lastName &&
+          data.email &&
+          data.phone &&
+          data.address &&
+          data.city &&
+          data.state &&
+          data.zipCode &&
+          data.businessType &&
+          data.yearsInBusiness &&
+          data.hasInsurance !== undefined &&
+          data.backgroundCheckConsent !== undefined &&
+          data.password &&
+          data.confirmPassword &&
+          data.termsAccepted !== undefined
+        ) {
+          const completeData = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            city: data.city,
+            state: data.state,
+            zipCode: data.zipCode,
+            businessName: data.businessName || "",
+            businessType: data.businessType,
+            ein: data.ein || "",
+            yearsInBusiness: data.yearsInBusiness,
+            licenseNumber: data.licenseNumber || "",
+            licenseType: data.licenseType || "",
+            licenseExpiry: data.licenseExpiry || "",
+            certifications: data.certifications || [],
+            hasInsurance: data.hasInsurance,
+            insuranceProvider: data.insuranceProvider || "",
+            insuranceAmount: data.insuranceAmount || "",
+            insuranceExpiry: data.insuranceExpiry || "",
+            serviceCategories: data.serviceCategories || [],
+            specializations: data.specializations || "",
+            serviceRadius: data.serviceRadius || "",
+            backgroundCheckConsent: data.backgroundCheckConsent,
+            password: data.password,
+            confirmPassword: data.confirmPassword,
+            termsAccepted: data.termsAccepted,
+            emailOtp: data.emailOtp || "",
+            phoneOtp: data.phoneOtp || "",
+          } satisfies ContractorSignupFormData;
+          await signup(completeData);
+          navigate("/dashboard");
+        }
       } else {
         nextStep();
       }

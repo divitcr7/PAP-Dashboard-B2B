@@ -1,37 +1,78 @@
+import React, { Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import ForgotPassword from "./components/ForgotPassword";
-import ErrorBoundary from "./components/ErrorBoundary";
-import Signup from "./pages/Signup";
-import { useAuth } from "./context/useAuthContext";
+import { AuthProvider } from "@/context/AuthContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { useAuth } from "@/context/useAuthContext";
+
+// Lazy load route components
+const Login = React.lazy(() => import("@/pages/Login"));
+const Signup = React.lazy(() => import("@/pages/Signup"));
+const Dashboard = React.lazy(() => import("@/pages/Dashboard"));
+
+// Protected Route Component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+// Root route component
+const RootRoute = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  return isAuthenticated ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
+    <Navigate to="/login" replace />
+  );
+};
 
 function App() {
-  const { isAuthenticated } = useAuth();
-
   return (
     <ErrorBoundary>
-      
-        <div className="mx-auto">
+      <AuthProvider>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center min-h-screen">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          }
+        >
           <Routes>
-            {!isAuthenticated ? (
-              <>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="*" element={<Navigate to="/login" replace />} />
-              </>
-            ) : (
-              <>
-                <Route path="/dashboard/*" element={<Dashboard />} />
-                <Route
-                  path="*"
-                  element={<Navigate to="/dashboard" replace />}
-                />
-              </>
-            )}
+            <Route path="/" element={<RootRoute />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route
+              path="/dashboard/*"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
-        </div>
+        </Suspense>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

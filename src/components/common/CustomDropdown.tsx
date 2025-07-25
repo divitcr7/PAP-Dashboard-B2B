@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { OptionType } from "@/types";
+import type { OptionType } from "../../types/auth";
 
 interface CustomDropdownProps {
   type?: "state" | "country" | string;
@@ -32,18 +32,21 @@ export const CustomDropdown = ({
 }: CustomDropdownProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredOptions = options.filter(
-    (option) =>
-      option.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      option.value.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredOptions = options
+    ? options.filter(
+        (option) =>
+          option.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          option.value.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : []; // Default to an empty array if options is undefined
 
-  const safeValue = typeof value === "string" && value !== "" ? value : undefined;
-  
+  const safeValue =
+    typeof value === "string" && value !== "" ? value : undefined;
+
   // Error styling - enhanced red border for validation errors on required fields only
   const hasError = required && !value;
-  const errorClass = hasError 
-    ? "border-red-500 border-2 focus:border-red-500 focus:ring-red-200 focus:ring-2" 
+  const errorClass = hasError
+    ? "border-red-500 border-2 focus:border-red-500 focus:ring-red-200 focus:ring-2"
     : "";
 
   return (

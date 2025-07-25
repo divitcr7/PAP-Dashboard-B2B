@@ -1,3 +1,5 @@
+import type { UseFormReturn } from "react-hook-form";
+
 export interface LoginFormValues {
   email: string;
   password: string;
@@ -13,18 +15,18 @@ export interface CompanySignupFormValues {
   companyPhone: string;
   isEVerified: boolean;
   eVerificationNumber?: string;
-  
+
   // Step 2: LLC Documentation
   llcDocument: File;
   businessLicense?: File;
   insuranceDocument?: File;
-  
+
   // Step 3: Business Operations
   propertiesUnderManagement: string;
   propertiesOwned?: string;
   businessYears: string;
   businessType: string;
-  
+
   // Step 4: Point of Contact
   contactName: string;
   contactRole: string;
@@ -34,11 +36,11 @@ export interface CompanySignupFormValues {
   contactCity: string;
   contactState: string;
   contactZipCode: string;
-  
+
   // Step 5: Account Setup
   password: string;
   confirmPassword: string;
-  
+
   // Step 6: Legal & Agreements
   termsAccepted: boolean;
   privacyAccepted: boolean;
@@ -164,4 +166,47 @@ export interface User {
   isVerified: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface OptionType {
+  label: string;
+  value: string;
+}
+
+export type ContractorFormStep = 1 | 2 | 3 | 4 | 5 | 6;
+
+export type ContractorStepProps = {
+  form: UseFormReturn<Partial<ContractorSignupFormData>>;
+};
+
+export interface ContractorSignupFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  businessName: string;
+  businessType: "individual" | "llc" | "corporation" | "partnership";
+  ein?: string;
+  yearsInBusiness: string;
+  licenseNumber?: string;
+  licenseType?: string;
+  licenseExpiry?: string;
+  certifications?: string[];
+  hasInsurance: boolean;
+  insuranceProvider?: string;
+  insuranceAmount?: string;
+  insuranceExpiry?: string;
+  serviceCategories?: string[];
+  specializations?: string;
+  serviceRadius?: string;
+  backgroundCheckConsent: boolean;
+  password: string;
+  confirmPassword: string;
+  termsAccepted: boolean;
+  emailOtp?: string;
+  phoneOtp?: string;
 }

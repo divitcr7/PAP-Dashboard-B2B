@@ -26,7 +26,7 @@ const SignupFeatureDisplay: React.FC<SignupFeatureDisplayProps> = ({
             "who trust Pick-A-Pad to streamline their operations with AI",
           stats: [
             { value: "60%", label: "Cost Reduction" },
-            { value: "120+", label: "Properties Managed" },
+            { value: "11+", label: "Properties Managed" },
             { value: "98.7%", label: "AI Accuracy" },
             { value: "2.3s", label: "Processing Time" },
           ],

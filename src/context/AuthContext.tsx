@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 // import axiosInstance from "@/lib/axiosInstance"; // Commented out for mock
 import type { LoginFormValues, User, SignupFormValues } from "@/types/auth";
+// import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "@/utils";
 
 interface AuthContextType {
@@ -286,7 +287,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       */
     } catch (error) {
       console.error("Logout failed:", error);
-      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred during logout.";
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred during logout.";
       toast.error("Logout failed", {
         description: errorMessage,
       });

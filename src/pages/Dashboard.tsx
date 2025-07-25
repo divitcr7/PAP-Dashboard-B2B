@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import { Routes, Route, Link, useLocation, useNavigate } from "react-router"
+import React, { useState, Suspense } from "react";
+import { Routes, Route, Link, useLocation, useNavigate } from "react-router";
 import {
   Home,
   Building,
@@ -25,9 +25,9 @@ import {
   Calendar,
   TrendingUp,
   Bell,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,23 +35,39 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
 // Import page components
-import OverviewPage from "./dashboard/OverviewPage"
-import PropertiesPage from "./dashboard/PropertiesPage"
-import TenantsPage from "./dashboard/TenantsPage"
-import MaintenancePage from "./dashboard/MaintenancePage"
-import MessagesPage from "./dashboard/MessagesPage"
-import SettingsPage from "./dashboard/SettingsPage"
-import AccountPage from "./dashboard/AccountPage"
-import PreviousTenantsPage from "./dashboard/PreviousTenantsPage"
-import UnitsPage from "./dashboard/UnitsPage"
+// Lazy load dashboard pages
+const OverviewPage = React.lazy(() => import("./dashboard/OverviewPage"));
+const PropertiesPage = React.lazy(() => import("./dashboard/PropertiesPage"));
+const UnitsPage = React.lazy(() => import("./dashboard/UnitsPage"));
+const TenantsPage = React.lazy(() => import("./dashboard/TenantsPage"));
+const PreviousTenantsPage = React.lazy(
+  () => import("./dashboard/PreviousTenantsPage")
+);
+const MaintenancePage = React.lazy(() => import("./dashboard/MaintenancePage"));
+const MessagesPage = React.lazy(() => import("./dashboard/MessagesPage"));
+const AccountPage = React.lazy(() => import("./dashboard/AccountPage"));
+const SettingsPage = React.lazy(() => import("./dashboard/SettingsPage"));
 
-// Add this function before the Dashboard component
-const getPageHeaderData = (pathname: string) => {
-  const path = pathname.split("/").pop()
+// Define button type
+type ButtonType = {
+  label: string;
+  variant: "outline" | "default";
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  link?: string;
+};
+
+const getPageHeaderData = (
+  pathname: string
+): {
+  title: string;
+  subtitle: string;
+  buttons: ButtonType[];
+} => {
+  const path = pathname.split("/").pop();
 
   switch (path) {
     case "properties":
@@ -69,9 +85,10 @@ const getPageHeaderData = (pathname: string) => {
             label: "Add Property",
             variant: "default" as const,
             icon: Plus,
+            link: "/dashboard/add-property",
           },
         ],
-      }
+      };
     case "tenants":
       return {
         title: "Tenant Management",
@@ -84,7 +101,7 @@ const getPageHeaderData = (pathname: string) => {
             link: "/dashboard/previous-tenants",
           },
         ],
-      }
+      };
     case "maintenance":
       return {
         title: "Maintenance Management",
@@ -94,9 +111,10 @@ const getPageHeaderData = (pathname: string) => {
             label: "Analytics",
             variant: "outline" as const,
             icon: TrendingUp,
+            link: "/dashboard/maintenance/analytics",
           },
         ],
-      }
+      };
     case "messages":
       return {
         title: "Messages & Communication",
@@ -106,21 +124,22 @@ const getPageHeaderData = (pathname: string) => {
             label: "Notifications",
             variant: "outline" as const,
             icon: Bell,
+            link: "/dashboard/notifications",
           },
         ],
-      }
+      };
     case "account":
       return {
         title: "Account Settings",
         subtitle: "Manage your profile, security, and preferences",
         buttons: [],
-      }
+      };
     case "settings":
       return {
         title: "Settings",
         subtitle: "Configure your dashboard preferences",
         buttons: [],
-      }
+      };
     case "previous-tenants":
       return {
         title: "Previous Tenants",
@@ -130,9 +149,10 @@ const getPageHeaderData = (pathname: string) => {
             label: "Export Data",
             variant: "outline" as const,
             icon: Download,
+            link: "/dashboard/export-data",
           },
         ],
-      }
+      };
     case "units":
       return {
         title: "Property Units",
@@ -142,109 +162,132 @@ const getPageHeaderData = (pathname: string) => {
             label: "Add Unit",
             variant: "default" as const,
             icon: Plus,
+            link: "/dashboard/add-unit",
           },
         ],
-      }
+      };
     default: // Overview
       return {
         title: "Overview",
-        subtitle: "Welcome back! Here's what's happening with your properties today",
+        subtitle:
+          "Welcome back! Here's what's happening with your properties today",
         buttons: [
-          // {
-          //   label: "Add Property",
-          //   variant: "default" as const,
-          //   icon: Plus,
-          // },
           {
             label: "Schedule Tour",
             variant: "outline" as const,
             icon: Calendar,
+            link: "/dashboard/schedule-tour",
           },
         ],
-      }
+      };
   }
-}
+};
 
 const Dashboard: React.FC = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const location = useLocation()
-  const navigate = useNavigate()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen)
-  }
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
 
   const getCurrentSection = () => {
-    const path = location.pathname.split("/").pop()
+    const path = location.pathname.split("/").pop();
     switch (path) {
       case "properties":
-        return "Properties"
+        return "Properties";
       case "tenants":
-        return "Tenants"
+        return "Tenants";
       case "maintenance":
-        return "Maintenance"
+        return "Maintenance";
       case "messages":
-        return "Messages"
+        return "Messages";
       case "reviews":
-        return "Reviews"
+        return "Reviews";
       case "account":
-        return "Account"
+        return "Account";
       case "settings":
-        return "Settings"
+        return "Settings";
       case "previous-tenants":
-        return "Previous Tenants"
+        return "Previous Tenants";
       case "units":
-        return "Units"
+        return "Units";
       default:
-        return "Overview"
+        return "Overview";
     }
-  }
+  };
 
   const getBreadcrumbs = () => {
-    const pathSegments = location.pathname.split("/").filter((segment) => segment)
-    const breadcrumbs = []
+    const pathSegments = location.pathname
+      .split("/")
+      .filter((segment) => segment);
+    const breadcrumbs = [];
     if (pathSegments.length > 1) {
       if (pathSegments[1] === "previous-tenants") {
-        breadcrumbs.push({ label: "Tenants", path: "/dashboard/tenants" })
+        breadcrumbs.push({ label: "Tenants", path: "/dashboard/tenants" });
         breadcrumbs.push({
           label: "Previous Tenants",
           path: "/dashboard/previous-tenants",
-        })
+        });
       } else if (pathSegments[1] === "units") {
         breadcrumbs.push({
           label: "Properties",
           path: "/dashboard/properties",
-        })
-        breadcrumbs.push({ label: "Units", path: "/dashboard/units" })
+        });
+        breadcrumbs.push({ label: "Units", path: "/dashboard/units" });
       }
     }
-    return breadcrumbs
-  }
+    return breadcrumbs;
+  };
 
   const navigationItems = [
     { path: "/dashboard", icon: Home, label: "Overview", badge: null },
-    { path: "/dashboard/properties", icon: Building, label: "Properties", badge: "12" },
+    {
+      path: "/dashboard/properties",
+      icon: Building,
+      label: "Properties",
+      badge: "12",
+    },
     { path: "/dashboard/tenants", icon: Users, label: "Tenants", badge: "24" },
-    { path: "/dashboard/maintenance", icon: FileText, label: "Maintenance", badge: "3" },
-    { path: "/dashboard/messages", icon: MessageSquare, label: "Messages", badge: "5" },
+    {
+      path: "/dashboard/maintenance",
+      icon: FileText,
+      label: "Maintenance",
+      badge: "3",
+    },
+    {
+      path: "/dashboard/messages",
+      icon: MessageSquare,
+      label: "Messages",
+      badge: "5",
+    },
     { path: "/dashboard/reviews", icon: Star, label: "Reviews", badge: null },
-    { path: "/dashboard/account", icon: UserCheck, label: "Account", badge: null },
-  ]
+    {
+      path: "/dashboard/account",
+      icon: UserCheck,
+      label: "Account",
+      badge: null,
+    },
+  ];
 
   const isActiveRoute = (path: string) => {
     if (path === "/dashboard") {
-      return location.pathname === "/dashboard"
+      return location.pathname === "/dashboard";
     }
-    return location.pathname.startsWith(path)
-  }
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 to-white">
       {/* Mobile menu overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
+          <div
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm"
+            onClick={() => setMobileMenuOpen(false)}
+          />
           <div className="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl border-r border-gray-200">
             {/* Mobile sidebar content */}
             <div className="flex flex-col h-full">
@@ -255,8 +298,12 @@ const Dashboard: React.FC = () => {
                     <Building className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-xl font-bold text-gray-900">Pick-A-Pad</h1>
-                    <p className="text-xs text-gray-500">AI Property Management</p>
+                    <h1 className="text-xl font-bold text-gray-900">
+                      Pick-A-Pad
+                    </h1>
+                    <p className="text-xs text-gray-500">
+                      AI Property Management
+                    </p>
                   </div>
                 </div>
                 <Button
@@ -285,8 +332,8 @@ const Dashboard: React.FC = () => {
               {/* Mobile Navigation */}
               <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
                 {navigationItems.map((item) => {
-                  const Icon = item.icon
-                  const isActive = isActiveRoute(item.path)
+                  const Icon = item.icon;
+                  const isActive = isActiveRoute(item.path);
                   return (
                     <Link
                       key={item.path}
@@ -299,16 +346,23 @@ const Dashboard: React.FC = () => {
                       }`}
                     >
                       <div className="flex items-center space-x-3">
-                        <Icon className={`h-5 w-5 ${isActive ? "text-blue-600" : "text-gray-500"}`} />
+                        <Icon
+                          className={`h-5 w-5 ${
+                            isActive ? "text-blue-600" : "text-gray-500"
+                          }`}
+                        />
                         <span>{item.label}</span>
                       </div>
                       {item.badge && (
-                        <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs">
+                        <Badge
+                          variant="secondary"
+                          className="bg-blue-100 text-blue-700 text-xs"
+                        >
                           {item.badge}
                         </Badge>
                       )}
                     </Link>
-                  )
+                  );
                 })}
               </nav>
 
@@ -324,7 +378,11 @@ const Dashboard: React.FC = () => {
                   }`}
                 >
                   <Settings
-                    className={`h-5 w-5 ${isActiveRoute("/dashboard/settings") ? "text-blue-600" : "text-gray-500"}`}
+                    className={`h-5 w-5 ${
+                      isActiveRoute("/dashboard/settings")
+                        ? "text-blue-600"
+                        : "text-gray-500"
+                    }`}
                   />
                   <span>Settings</span>
                 </Link>
@@ -374,8 +432,8 @@ const Dashboard: React.FC = () => {
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
             {navigationItems.map((item) => {
-              const Icon = item.icon
-              const isActive = isActiveRoute(item.path)
+              const Icon = item.icon;
+              const isActive = isActiveRoute(item.path);
               return (
                 <Link
                   key={item.path}
@@ -387,16 +445,23 @@ const Dashboard: React.FC = () => {
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Icon className={`h-5 w-5 ${isActive ? "text-blue-600" : "text-gray-500"}`} />
+                    <Icon
+                      className={`h-5 w-5 ${
+                        isActive ? "text-blue-600" : "text-gray-500"
+                      }`}
+                    />
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (
-                    <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs">
+                    <Badge
+                      variant="secondary"
+                      className="bg-blue-100 text-blue-700 text-xs"
+                    >
                       {item.badge}
                     </Badge>
                   )}
                 </Link>
-              )
+              );
             })}
           </nav>
 
@@ -411,7 +476,11 @@ const Dashboard: React.FC = () => {
               }`}
             >
               <Settings
-                className={`h-5 w-5 ${isActiveRoute("/dashboard/settings") ? "text-blue-600" : "text-gray-500"}`}
+                className={`h-5 w-5 ${
+                  isActiveRoute("/dashboard/settings")
+                    ? "text-blue-600"
+                    : "text-gray-500"
+                }`}
               />
               <span>Settings</span>
             </Link>
@@ -441,10 +510,14 @@ const Dashboard: React.FC = () => {
                     {getPageHeaderData(location.pathname).title}
                   </h1>
                   {getCurrentSection() === "Overview" && (
-                    <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Live</Badge>
+                    <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                      Live
+                    </Badge>
                   )}
                 </div>
-                <p className="text-gray-600 text-sm">{getPageHeaderData(location.pathname).subtitle}</p>
+                <p className="text-gray-600 text-sm">
+                  {getPageHeaderData(location.pathname).subtitle}
+                </p>
                 {getBreadcrumbs().length > 0 && (
                   <div className="flex items-center space-x-2 text-sm mt-1">
                     {getBreadcrumbs().map((crumb, index) => (
@@ -455,7 +528,9 @@ const Dashboard: React.FC = () => {
                         >
                           {crumb.label}
                         </Link>
-                        {index < getBreadcrumbs().length - 1 && <ChevronRight className="h-4 w-4 text-gray-400" />}
+                        {index < getBreadcrumbs().length - 1 && (
+                          <ChevronRight className="h-4 w-4 text-gray-400" />
+                        )}
                       </React.Fragment>
                     ))}
                   </div>
@@ -466,35 +541,50 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center space-x-4">
               {/* Dynamic action buttons */}
               <div className="hidden sm:flex items-center space-x-3">
-                {getPageHeaderData(location.pathname).buttons.map((button, index) => {
-                  const IconComponent = button.icon
-                  const ButtonComponent =
-                    button.variant === "outline" ? (
-                      <Button key={index} variant="outline" className="bg-white" asChild={!!button.link}>
-                        {button.link ? (
-                          <Link to={button.link}>
-                            <IconComponent className="h-4 w-4 mr-2" />
-                            {button.label}
-                          </Link>
-                        ) : (
-                          <>
-                            <IconComponent className="h-4 w-4 mr-2" />
-                            {button.label}
-                          </>
-                        )}
-                      </Button>
-                    ) : (
-                      <Button
-                        key={index}
-                        className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg"
-                      >
-                        <IconComponent className="h-4 w-4 mr-2" />
-                        {button.label}
-                      </Button>
-                    )
+                {getPageHeaderData(location.pathname).buttons.map(
+                  (button, index) => {
+                    const IconComponent = button.icon;
+                    const ButtonComponent =
+                      button.variant === "outline" ? (
+                        <Button
+                          key={index}
+                          variant="outline"
+                          className="bg-white"
+                          asChild={!!button.link}
+                        >
+                          {button.link ? (
+                            <Link to={button.link}>
+                              <button.icon
+                                width={16}
+                                height={16}
+                                className="mr-2"
+                              />
+                              {button.label}
+                            </Link>
+                          ) : (
+                            <>
+                              <button.icon
+                                width={16}
+                                height={16}
+                                className="mr-2"
+                              />
+                              {button.label}
+                            </>
+                          )}
+                        </Button>
+                      ) : (
+                        <Button
+                          key={index}
+                          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg"
+                        >
+                          <IconComponent className="h-4 w-4 mr-2" />
+                          {button.label}
+                        </Button>
+                      );
 
-                  return ButtonComponent
-                })}
+                    return ButtonComponent;
+                  }
+                )}
               </div>
 
               {/* Notifications */}
@@ -515,8 +605,12 @@ const Dashboard: React.FC = () => {
                     className="flex items-center space-x-3 px-4 py-2 h-auto hover:bg-gray-100 transition-all duration-200 rounded-xl"
                   >
                     <div className="text-right hidden sm:block">
-                      <p className="text-sm font-semibold text-gray-900">Property Manager</p>
-                      <p className="text-xs text-gray-500">admin@pickapad.com</p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        Property Manager
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        admin@pickapad.com
+                      </p>
                     </div>
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                       <User className="h-5 w-5 text-white" />
@@ -527,16 +621,23 @@ const Dashboard: React.FC = () => {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate("/dashboard/account")}>
+                  <DropdownMenuItem
+                    onClick={() => navigate("/dashboard/account")}
+                  >
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>
+                  <DropdownMenuItem
+                    onClick={() => navigate("/dashboard/settings")}
+                  >
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate("/login")} className="text-red-600">
+                  <DropdownMenuItem
+                    onClick={() => navigate("/login")}
+                    className="text-red-600"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign out
                   </DropdownMenuItem>
@@ -548,21 +649,32 @@ const Dashboard: React.FC = () => {
 
         {/* Content area */}
         <main className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 to-white">
-          <Routes>
-            <Route path="/" element={<OverviewPage />} />
-            <Route path="/properties" element={<PropertiesPage />} />
-            <Route path="/units" element={<UnitsPage />} />
-            <Route path="/tenants" element={<TenantsPage />} />
-            <Route path="/previous-tenants" element={<PreviousTenantsPage />} />
-            <Route path="/maintenance" element={<MaintenancePage />} />
-            <Route path="/messages" element={<MessagesPage />} />
-            <Route path="/account" element={<AccountPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Routes>
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center h-full">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            }
+          >
+            <Routes>
+              <Route path="/" element={<OverviewPage />} />
+              <Route path="/properties" element={<PropertiesPage />} />
+              <Route path="/units" element={<UnitsPage />} />
+              <Route path="/tenants" element={<TenantsPage />} />
+              <Route
+                path="/previous-tenants"
+                element={<PreviousTenantsPage />}
+              />
+              <Route path="/maintenance" element={<MaintenancePage />} />
+              <Route path="/messages" element={<MessagesPage />} />
+              <Route path="/account" element={<AccountPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

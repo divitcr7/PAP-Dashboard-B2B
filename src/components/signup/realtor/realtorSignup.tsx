@@ -6,7 +6,11 @@ import { ArrowLeft, ArrowRight, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useAuth } from "@/context/useAuthContext";
-import { type RetailerSignupFormData, type RetailerFormStep, completeRetailerSignupSchema } from "@/schemas/Auth";
+import {
+  type RetailerSignupFormData,
+  type RetailerFormStep,
+  completeRetailerSignupSchema,
+} from "@/schemas/Auth";
 
 // Import step components
 import RetailerStepOne from "./retailerStepOne";
@@ -72,9 +76,30 @@ const RetailerSignup: React.FC<RetailerSignupProps> = ({ onBack }) => {
   };
 
   const handleSubmit = async (data: RetailerSignupFormData) => {
+    const completeData = {
+      ...data,
+      firstName: "",
+      lastName: "",
+      address: "",
+      city: "",
+      state: "Texas",
+      zipCode: "",
+      certifications: [],
+      hasInsurance: false,
+      insuranceProvider: "",
+      insuranceAmount: "",
+      insuranceExpiry: "",
+      serviceCategories: [],
+      specializations: "",
+      serviceRadius: "",
+      backgroundCheckConsent: false,
+      emailOtp: "",
+      phoneOtp: "",
+      businessType: "individual" as const, // Using a valid literal type
+    };
     try {
       if (currentStep === totalSteps) {
-        await signup(data);
+        await signup(completeData);
         navigate("/dashboard");
       } else {
         nextStep();
@@ -89,12 +114,12 @@ const RetailerSignup: React.FC<RetailerSignupProps> = ({ onBack }) => {
     <>
       {/* Orange Progress Bar at Top */}
       <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-gray-200">
-        <div 
+        <div
           className="h-full bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-500 ease-out"
           style={{ width: `${(currentStep / totalSteps) * 100}%` }}
         ></div>
       </div>
-      
+
       {/* Header with Logo and Progress Text */}
       <div className="fixed top-1 left-0 right-0 z-50 px-6 py-4">
         <div className="flex items-center justify-between">
@@ -108,18 +133,19 @@ const RetailerSignup: React.FC<RetailerSignupProps> = ({ onBack }) => {
             <span className="text-sm font-medium text-gray-600">
               Step {currentStep} of {totalSteps}
             </span>
-                    {currentStep != 1 && (
-          <div className="mt-1 text-center text-sm text-orange-600">
-            <p className="text-gray-600">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="text-orange-600 hover:text-orange-700 font-medium ml-1"
-              >
-                Sign in
-              </Link>
-            </p>
-          </div>)}
+            {currentStep != 1 && (
+              <div className="mt-1 text-center text-sm text-orange-600">
+                <p className="text-gray-600">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="text-orange-600 hover:text-orange-700 font-medium ml-1"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -196,7 +222,7 @@ const RetailerSignup: React.FC<RetailerSignupProps> = ({ onBack }) => {
               >
                 <div className="relative">
                   {/* Back buttons positioned absolutely in top-left corner */}
-                  {(
+                  {
                     <button
                       type="button"
                       onClick={currentStep != 1 ? prevStep : onBack}
@@ -205,7 +231,7 @@ const RetailerSignup: React.FC<RetailerSignupProps> = ({ onBack }) => {
                       <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
                       {`Back ${currentStep != 1 ? "" : "to Selection"}`}
                     </button>
-                  )}
+                  }
 
                   {/* Your current step content */}
                   {renderCurrentStep()}

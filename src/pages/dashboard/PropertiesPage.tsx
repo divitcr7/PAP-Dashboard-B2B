@@ -3,21 +3,24 @@ import {
   MapPin,
   Users,
   Plus,
-  Search,
-  Filter,
   TrendingUp,
   DollarSign,
   Eye,
   Edit,
   MoreHorizontal,
-} from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { mockProperties } from "../../data/mockData"
+  Filter,
+} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { mockProperties } from "../../data/mockData";
 
 const PropertyCard = ({ property }: { property: any }) => (
   <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-sm bg-white overflow-hidden">
@@ -27,7 +30,11 @@ const PropertyCard = ({ property }: { property: any }) => (
       <div className="absolute top-4 right-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="bg-white/80 backdrop-blur-sm hover:bg-white">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="bg-white/80 backdrop-blur-sm hover:bg-white"
+            >
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -46,8 +53,12 @@ const PropertyCard = ({ property }: { property: any }) => (
     </div>
     <CardContent className="p-6">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{property.name}</h3>
-        <Badge className="bg-green-100 text-green-800 hover:bg-green-100 border-green-200">Active</Badge>
+        <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+          {property.name}
+        </h3>
+        <Badge className="bg-green-100 text-green-800 hover:bg-green-100 border-green-200">
+          Active
+        </Badge>
       </div>
 
       <div className="flex items-center text-gray-600 mb-6">
@@ -65,7 +76,9 @@ const PropertyCard = ({ property }: { property: any }) => (
             {property.occupiedUnits}/{property.totalUnits}
           </p>
           <Progress value={property.occupancyRate} className="h-2" />
-          <p className="text-xs text-blue-600 mt-1">{property.occupancyRate}%</p>
+          <p className="text-xs text-blue-600 mt-1">
+            {property.occupancyRate}%
+          </p>
         </div>
 
         <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
@@ -73,7 +86,9 @@ const PropertyCard = ({ property }: { property: any }) => (
             <DollarSign className="h-5 w-5 text-green-600 mr-2" />
             <span className="text-sm font-medium text-green-700">Revenue</span>
           </div>
-          <p className="text-2xl font-bold text-green-900">${property.monthlyRevenue.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-green-900">
+            ${property.monthlyRevenue.toLocaleString()}
+          </p>
           <p className="text-xs text-green-600 mt-1">per month</p>
         </div>
       </div>
@@ -83,29 +98,37 @@ const PropertyCard = ({ property }: { property: any }) => (
           <Eye className="h-4 w-4 mr-2" />
           View Details
         </Button>
-        <Button variant="outline" className="flex-1 bg-transparent hover:bg-gray-50">
+        <Button
+          variant="outline"
+          className="flex-1 bg-transparent hover:bg-gray-50"
+        >
           <Edit className="h-4 w-4 mr-2" />
           Manage
         </Button>
       </div>
     </CardContent>
   </Card>
-)
+);
 
 const PropertiesPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto p-8 space-y-8">
-
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card className="border-0 shadow-sm bg-white hover:shadow-lg transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Total Properties</p>
-                  <p className="text-3xl font-bold text-gray-900">{mockProperties.length}</p>
-                  <p className="text-sm text-green-600 font-medium mt-1">+2 this month</p>
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    Total Properties
+                  </p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {mockProperties.length}
+                  </p>
+                  <p className="text-sm text-green-600 font-medium mt-1">
+                    +2 this month
+                  </p>
                 </div>
                 <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
                   <Building className="h-7 w-7 text-blue-600" />
@@ -118,11 +141,15 @@ const PropertiesPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Total Units</p>
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    Total Units
+                  </p>
                   <p className="text-3xl font-bold text-gray-900">
                     {mockProperties.reduce((sum, p) => sum + p.totalUnits, 0)}
                   </p>
-                  <p className="text-sm text-green-600 font-medium mt-1">+8 this month</p>
+                  <p className="text-sm text-green-600 font-medium mt-1">
+                    +8 this month
+                  </p>
                 </div>
                 <div className="p-4 bg-green-50 rounded-2xl border border-green-100">
                   <Users className="h-7 w-7 text-green-600" />
@@ -135,11 +162,21 @@ const PropertiesPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Avg Occupancy</p>
-                  <p className="text-3xl font-bold text-gray-900">
-                    {Math.round(mockProperties.reduce((sum, p) => sum + p.occupancyRate, 0) / mockProperties.length)}%
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    Avg Occupancy
                   </p>
-                  <p className="text-sm text-green-600 font-medium mt-1">+2.1% this month</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {Math.round(
+                      mockProperties.reduce(
+                        (sum, p) => sum + p.occupancyRate,
+                        0
+                      ) / mockProperties.length
+                    )}
+                    %
+                  </p>
+                  <p className="text-sm text-green-600 font-medium mt-1">
+                    +2.1% this month
+                  </p>
                 </div>
                 <div className="p-4 bg-purple-50 rounded-2xl border border-purple-100">
                   <TrendingUp className="h-7 w-7 text-purple-600" />
@@ -152,11 +189,18 @@ const PropertiesPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Total Revenue</p>
-                  <p className="text-3xl font-bold text-gray-900">
-                    ${mockProperties.reduce((sum, p) => sum + p.monthlyRevenue, 0).toLocaleString()}
+                  <p className="text-sm font-medium text-gray-600 mb-1">
+                    Total Revenue
                   </p>
-                  <p className="text-sm text-green-600 font-medium mt-1">+12.5% this month</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    $
+                    {mockProperties
+                      .reduce((sum, p) => sum + p.monthlyRevenue, 0)
+                      .toLocaleString()}
+                  </p>
+                  <p className="text-sm text-green-600 font-medium mt-1">
+                    +12.5% this month
+                  </p>
                 </div>
                 <div className="p-4 bg-orange-50 rounded-2xl border border-orange-100">
                   <DollarSign className="h-7 w-7 text-orange-600" />
@@ -170,7 +214,9 @@ const PropertiesPage = () => {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">All Properties</h2>
-            <div className="flex items-center justify-between gap-4">              <div className="flex space-x-3">
+            <div className="flex items-center justify-between gap-4">
+              {" "}
+              <div className="flex space-x-3">
                 <Button variant="outline" className="bg-transparent">
                   <Filter className="h-4 w-4 mr-2" />
                   Filter
@@ -179,10 +225,9 @@ const PropertiesPage = () => {
                   Sort by
                 </Button>
               </div>
-
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-              {mockProperties.length} properties
-            </Badge>
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                {mockProperties.length} properties
+              </Badge>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -198,9 +243,12 @@ const PropertiesPage = () => {
             <div className="w-24 h-24 bg-gradient-to-br from-blue-50 to-purple-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <Building className="h-12 w-12 text-blue-500" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No properties found</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              No properties found
+            </h3>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              Get started by adding your first property to begin managing your portfolio.
+              Get started by adding your first property to begin managing your
+              portfolio.
             </p>
             <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg">
               <Plus className="h-4 w-4 mr-2" />
@@ -210,7 +258,7 @@ const PropertiesPage = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PropertiesPage
+export default PropertiesPage;

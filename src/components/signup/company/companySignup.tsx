@@ -76,9 +76,33 @@ const CompanySignup: React.FC<CompanySignupProps> = ({ onBack }) => {
   };
 
   const handleSubmit = async (data: CompanySignupFormData) => {
+    const completeData = {
+      ...data,
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      state: "Texas",
+      zipCode: "",
+      certifications: [],
+      hasInsurance: false,
+      insuranceProvider: "",
+      insuranceAmount: "",
+      insuranceExpiry: "",
+      serviceCategories: [],
+      specializations: "",
+      serviceRadius: "",
+      backgroundCheckConsent: false,
+      emailOtp: "",
+      phoneOtp: "",
+      yearsInBusiness: "",
+      businessType: "individual" as const, // Using a valid literal type
+    };
     try {
       if (currentStep === totalSteps) {
-        await signup(data);
+        await signup(completeData);
         navigate("/dashboard");
       } else {
         nextStep();

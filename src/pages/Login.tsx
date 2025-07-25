@@ -22,139 +22,31 @@ import type { LoginData, LoginErrors } from "@/types/auth";
 import { validateLoginForm } from "@/schemas/Auth";
 import ForgotPasswordForm from "@/components/ForgetPassword";
 
-const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertType, setAlertType] = useState<"error" | "success" | "info">(
-    "info"
-  );
-
-  // Login form state
-  const [loginData, setLoginData] = useState<LoginData>({
-    email: "",
-    password: "",
-    rememberMe: false,
-  });
-  const [loginErrors, setLoginErrors] = useState<LoginErrors>({});
-
-  // Show alert helper
-  const showAlertMessage = (
-    message: string,
-    type: "error" | "success" | "info" = "info"
-  ) => {
-    setAlertMessage(message);
-    setAlertType(type);
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 5000);
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const validation = validateLoginForm(loginData);
-
-    if (!validation.isValid) {
-      setLoginErrors(validation.errors);
-      toast.error("Please fix the errors in the form");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      // Simulate API call
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          // Simulate random success/failure for demo
-          if (Math.random() > 0.3) {
-            resolve(true);
-          } else {
-            reject(new Error("Invalid credentials"));
-          }
-        }, 1500);
-      });
-
-      console.log("Login data:", loginData);
-
-      // Success toast
-      toast.success("Welcome back! Login successful");
-
-      // Success alert
-      showAlertMessage(
-        "Login successful! Redirecting to dashboard...",
-        "success"
-      );
-
-    } catch (error) {
-      console.error("Login failed:", error);
-
-      // Error toast
-      toast.error("Login failed. Please check your credentials and try again.");
-
-      // Error alert
-      showAlertMessage("Invalid email or password. Please try again.", "error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-const handleLoginInputChange = useCallback((field: string, value: string | boolean) => {
-  setLoginData((prev) => ({
-    ...prev,
-    [field]: value,
-  }));
-
-  // Clear error when user starts typing
-  if (loginErrors[field as keyof LoginErrors]) {
-    setLoginErrors((prev) => ({
-      ...prev,
-      [field]: undefined,
-    }));
-  }
-}, [loginErrors]);
-
-// And replace the togglePasswordVisibility function with this:
-
-const togglePasswordVisibility = useCallback((e: React.MouseEvent) => {
-  e.preventDefault();
-  setShowPassword(prev => !prev);
-}, []);
-
-  // Company Info Component
-  const CompanyInfo = () => (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="text-center">
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg px-4 py-2">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">
-            Trusted by Property Managers
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-7">
-            <div>
-              <div className="text-2xl font-bold text-blue-600">120+</div>
-              <div className="text-xs text-gray-600">Properties Managed</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-purple-600">98.7%</div>
-              <div className="text-xs text-gray-600">Accuracy Rate</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-green-600">60%</div>
-              <div className="text-xs text-gray-600">Cost Reduction</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-orange-600">2.3s</div>
-              <div className="text-xs text-gray-600">Processing Time</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const LoginForm = () => (
+const LoginForm = ({ 
+  loginData, 
+  loginErrors, 
+  showPassword,
+  handleLoginInputChange, 
+  handleLogin, 
+  isLoading, 
+  setShowForgotPassword, 
+  showAlert, 
+  alertMessage, 
+  alertType,
+  togglePasswordVisibility 
+}: {
+  loginData: LoginData;
+  loginErrors: LoginErrors;
+  showPassword: boolean;
+  handleLoginInputChange: (field: string, value: string | boolean) => void;
+  handleLogin: (e: React.FormEvent) => void;
+  isLoading: boolean;
+  setShowForgotPassword: (show: boolean) => void;
+  showAlert: boolean;
+  alertMessage: string;
+  alertType: "error" | "success" | "info";
+  togglePasswordVisibility: (e: React.MouseEvent) => void;
+}) => (
     <div className="w-full max-w-md mx-auto space-y-6">
       <CardHeader>
         <CardTitle className="text-3xl font-bold text-gray-800">
@@ -300,6 +192,138 @@ const togglePasswordVisibility = useCallback((e: React.MouseEvent) => {
     </div>
   );
 
+const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState<"error" | "success" | "info">(
+    "info"
+  );
+
+  // Login form state
+  const [loginData, setLoginData] = useState<LoginData>({
+    email: "",
+    password: "",
+    rememberMe: false,
+  });
+  const [loginErrors, setLoginErrors] = useState<LoginErrors>({});
+
+  // Show alert helper
+  const showAlertMessage = (
+    message: string,
+    type: "error" | "success" | "info" = "info"
+  ) => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 5000);
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const validation = validateLoginForm(loginData);
+
+    if (!validation.isValid) {
+      setLoginErrors(validation.errors);
+      toast.error("Please fix the errors in the form");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Simulate API call
+      await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          // Simulate random success/failure for demo
+          if (Math.random() > 0.3) {
+            resolve(true);
+          } else {
+            reject(new Error("Invalid credentials"));
+          }
+        }, 1500);
+      });
+
+      console.log("Login data:", loginData);
+
+      // Success toast
+      toast.success("Welcome back! Login successful");
+
+      // Success alert
+      showAlertMessage(
+        "Login successful! Redirecting to dashboard...",
+        "success"
+      );
+
+    } catch (error) {
+      console.error("Login failed:", error);
+
+      // Error toast
+      toast.error("Login failed. Please check your credentials and try again.");
+
+      // Error alert
+      showAlertMessage("Invalid email or password. Please try again.", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+const handleLoginInputChange = useCallback((field: string, value: string | boolean) => {
+  setLoginData((prev) => ({
+    ...prev,
+    [field]: value,
+  }));
+
+  // Clear error when user starts typing
+  if (loginErrors[field as keyof LoginErrors]) {
+    setLoginErrors((prev) => ({
+      ...prev,
+      [field]: undefined,
+    }));
+  }
+}, [loginErrors]);
+
+// And replace the togglePasswordVisibility function with this:
+
+const togglePasswordVisibility = useCallback((e: React.MouseEvent) => {
+  e.preventDefault();
+  setShowPassword(prev => !prev);
+}, []);
+
+  // Company Info Component
+  const CompanyInfo = () => (
+    <div className="w-full max-w-4xl mx-auto">
+      <div className="text-center">
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg px-4 py-2">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            Trusted by Property Managers
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-7">
+            <div>
+              <div className="text-2xl font-bold text-blue-600">120+</div>
+              <div className="text-xs text-gray-600">Properties Managed</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-purple-600">98.7%</div>
+              <div className="text-xs text-gray-600">Accuracy Rate</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-green-600">60%</div>
+              <div className="text-xs text-gray-600">Cost Reduction</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-orange-600">2.3s</div>
+              <div className="text-xs text-gray-600">Processing Time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white w-full">
       {/* Top Left Logo */}
@@ -321,7 +345,19 @@ const togglePasswordVisibility = useCallback((e: React.MouseEvent) => {
           {showForgotPassword ? (
             <ForgotPasswordForm onBack={() => setShowForgotPassword(false)} />
           ) : (
-            <LoginForm />
+            <LoginForm 
+              loginData={loginData}
+              loginErrors={loginErrors}
+              showPassword={showPassword}
+              handleLoginInputChange={handleLoginInputChange}
+              handleLogin={handleLogin}
+              isLoading={isLoading}
+              setShowForgotPassword={setShowForgotPassword}
+              showAlert={showAlert}
+              alertMessage={alertMessage}
+              alertType={alertType}
+              togglePasswordVisibility={togglePasswordVisibility}
+            />
           )}
         </div>
       </div>

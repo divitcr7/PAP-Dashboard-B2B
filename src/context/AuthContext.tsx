@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-// import axiosInstance from "@/lib/axiosInstance"; // Commented out for mock
 import type { LoginFormValues, User, SignupFormValues } from "@/types/auth";
 // import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "@/utils";
